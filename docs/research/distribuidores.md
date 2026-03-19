@@ -26,14 +26,25 @@ Para cada distribuidor, avaliamos como acessar preços e catálogos **sem pagar 
 
 ## Distribuidores Prioritários — Contato Imediato
 
-### 1. Aldo Solar
-- **Site:** aldo.com.br
+### 1. Aldo Solar ✅ (integração validada via API Volt)
+- **Site:** aldo.com.br | portal: volt.aldo.com.br
 - **Porte:** Maior distribuidor do Brasil (fundado 1982, 11k+ clientes ativos)
-- **Acesso possível:** Portal integrador (login) + Scraping (catálogo público visível)
-- **Tem API?** Sim, mas não documentada publicamente — requer contato comercial
-- **Abordagem:** Contato para cadastro como revendedor → solicitar acesso ao portal integrador
-- **Contato:** contato@aldo.com.br | (44) 3261-2000 | Maringá, PR
-- **Prioridade:** ⭐⭐⭐⭐⭐ (maior player do mercado)
+- **Acesso possível:** API REST privada via portal Volt (Blazor WASM .NET 8)
+- **Tem API?** **Sim — REST** em `https://win-tasks02.aldo.com.br:8443/services/MetamorfoseVoltService`
+- **Swagger:** disponível em `/swagger/v1/swagger.json` (256 endpoints)
+- **Stack técnica:**
+  - Auth: `POST /AutenticarUsuario` → `{"usuario": email, "senhaCriptografada": Base64("00"+password)}`
+  - Chamadas subsequentes: `Authorization: Basic base64(email:password)` (plaintext)
+  - Criptografia `senhaCriptografada`: `n=0` → `Base64("00" + password)` (algoritmo de nested-base64, n=0 é o mais simples)
+- **Endpoints úteis:**
+  - `GET /ListarProdutos?TipoProdutos={GERADOR_GUID}` — lista todos os kits geradores
+  - `GET /ObterCodigoGuidTipoProdutoGerador` — retorna `GERADOR_GUID = "93ed136d-d7c2-4c9a-98da-ea86d59cb6ac"`
+  - `GET /ListarFiltrosSistemaFotovoltaico` — filtros (tensão, estrutura, marca, sistema)
+  - `POST /SimularGeradorFotovoltaico` — simulação personalizada (requer params específicos)
+- **Catálogo validado:** 36 kits On-grid COLONIAL, 3,33 a 16,65 kWp, R$6.428 a R$21.777
+- **Marcas presentes:** CHINT, GOODWE, GROWATT, SOLPLANET | Painéis: JINKO, DAH, OSDA
+- **Script de teste:** `scripts/test_aldo.py` (a criar)
+- **Prioridade:** ⭐⭐⭐⭐⭐ (integração validada, 36 kits com preços reais)
 
 ---
 
@@ -197,7 +208,7 @@ Para cada distribuidor, avaliamos como acessar preços e catálogos **sem pagar 
 | # | Distribuidor | Acesso Imediato | Precisa Contato | Prioridade |
 |---|---|---|---|---|
 | ✅ | Fortlev Solar | API (já integrado) | Não | — |
-| 1 | Aldo Solar | Scraping | Sim (portal/API) | ⭐⭐⭐⭐⭐ |
+| ✅ | Aldo Solar | API REST (validada) | Não (já funciona) | ⭐⭐⭐⭐⭐ |
 | 2 | Serrana Solar | Portal (cadastro) | Sim (cadastro) | ⭐⭐⭐⭐⭐ |
 | 3 | Minha Casa Solar | Scraping | Sim (revendedor) | ⭐⭐⭐⭐ |
 | 4 | NeoSolar | Scraping | Sim (parceiro) | ⭐⭐⭐⭐ |
@@ -218,9 +229,9 @@ Para cada distribuidor, avaliamos como acessar preços e catálogos **sem pagar 
 
 - [ ] Cadastro no portal Serrana Solar (acesso mais rápido)
 - [ ] Cadastro no portal parceirosuno.com.br (Suno)
-- [ ] Contato comercial com Aldo Solar para acesso ao portal/API
+- [x] Aldo Solar — **CONCLUÍDO**: API REST validada, 36 kits com preços reais (ver Swagger Volt + `scripts/test_aldo.py` a criar)
 - [ ] Contato com Edeltec Solar para acesso ao portal integrador
-- [ ] Implementar scraping: Aldo Solar, Minha Casa Solar, NeoSolar
+- [ ] Implementar scraping: Minha Casa Solar, NeoSolar
 - [x] Verificar API Solfácil — **CONCLUÍDO**: integração GraphQL validada, kit montado com preços reais (ver `scripts/test_solfacil.py`)
 - [ ] Contatar Ecori pedindo acesso direto (sem Luvik)
 
