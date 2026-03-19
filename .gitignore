@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.aiox-core/node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# State files (tracked)
+# scripts/state.json — tracked on purpose
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+*.swp
+*.swo
+
+# Build
+dist/
+build/
+.next/
+out/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# AIOX runtime
+.aiox/handoffs/
