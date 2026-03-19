@@ -72,23 +72,49 @@ curl -k -s -X POST \
 
 ---
 
-### 5. Criar página do projeto no Notion
+### 5. Criar card do projeto no Notion
 
-```bash
-NOTION_TOKEN="ntn_..."
-PARENT_PAGE_ID="3251d792-23f7-8129-a523-f7ddfd721aac"  # página raiz sempre a mesma
+> ⚠️ **ATENÇÃO — Erro comum:** NÃO criar como subpágina de outro projeto.
+> O card deve ser criado diretamente no **database "Projetos"** (board principal),
+> que é um database separado — não uma página.
 
-# Criar página do projeto
-RESPONSE=$(curl -k -s -X POST https://api.notion.com/v1/pages \
-  -H "Authorization: Bearer $NOTION_TOKEN" \
-  -H "Content-Type: application/json" \
-  -H "Notion-Version: 2022-06-28" \
-  -d "{
-    \"parent\":{\"type\":\"page_id\",\"page_id\":\"$PARENT_PAGE_ID\"},
-    \"properties\":{\"title\":{\"title\":[{\"text\":{\"content\":\"{NOME DO PROJETO}\"}}]}}
-  }")
-PROJECT_PAGE_ID=$(echo "$RESPONSE" | python -c "import sys,json; print(json.loads(sys.stdin.read()).get('id',''))")
-echo "PROJECT_PAGE_ID: $PROJECT_PAGE_ID"
+```python
+# Executar via: python -c "..." ou salvar e rodar como script
+import urllib.request, json, ssl
+
+NOTION_TOKEN = "ntn_..."
+PROJECTS_DATABASE_ID = "31f1d792-23f7-81c5-adc6-d0de2785b548"  # database "Projetos" — sempre o mesmo
+
+data = {
+    "parent": {"database_id": PROJECTS_DATABASE_ID},
+    "properties": {
+        "Nome do projeto": {
+            "title": [{"text": {"content": "{NOME DO PROJETO}"}}]
+        },
+        "Status": {
+            "status": {"name": "N\u00e3o iniciado"}
+        }
+    }
+}
+
+body = json.dumps(data).encode("utf-8")
+req = urllib.request.Request(
+    "https://api.notion.com/v1/pages",
+    data=body, method="POST",
+    headers={
+        "Authorization": f"Bearer {NOTION_TOKEN}",
+        "Content-Type": "application/json",
+        "Notion-Version": "2022-06-28"
+    }
+)
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+with urllib.request.urlopen(req, context=ctx) as r:
+    resp = json.loads(r.read())
+    print("Card criado! ID:", resp.get("id"))
+    print("URL:", resp.get("url"))
+    PROJECT_PAGE_ID = resp.get("id")
 ```
 
 ---
@@ -269,4 +295,11 @@ Resultado esperado: `completed success`
 | Projeto | Pasta | GitHub | Notion Page ID |
 |---|---|---|---|
 | Newsletter Eletricista | `Newsletter/Etapa-1` | `newsletter-eletricista-etapa1` | `3251d792-23f7-8129-a523-f7ddfd721aac` |
-| HUB Solar | `HUB-Solar` | `hub-solar` | `3281d792-23f7-81fa-9cf1-cdda8cc3e2e0` |
+| HUB Solar | `HUB-Solar` | `hub-solar` | `3281d792-23f7-8114-bd37-ca18cb2360af` |
+
+## IDs Fixos (nunca mudam)
+
+| Recurso | ID |
+|---|---|
+| Database "Projetos" (board principal) | `31f1d792-23f7-81c5-adc6-d0de2785b548` |
+| NOTION_TOKEN | Em `.env.local` e GitHub Secrets |
