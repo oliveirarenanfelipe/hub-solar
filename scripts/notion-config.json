@@ -1,16 +1,18 @@
 {
   "project_page_id": "3281d792-23f7-81fa-9cf1-cdda8cc3e2e0",
   "tasks_database_id": "3281d792-23f7-8189-968c-cdb7d89aec19",
-  "story_map": {},
+  "story_map": {
+    "0.1": "3281d792-23f7-811d-9b88-f8c24aa1af1c"
+  },
   "status_map": {
-    "Draft":      "Ideia",
-    "Ready":      "Pronto Para Executar",
+    "Draft": "Ideia",
+    "Ready": "Pronto Para Executar",
     "InProgress": "Em andamento",
-    "InReview":   "Em revisão",
-    "Done":       "Concluído",
-    "Approved":   "Concluído",
-    "Blocked":    "Refinando",
-    "Abortado":   "Cancelado",
-    "Cancelled":  "Cancelado"
+    "InReview": "Em revisão",
+    "Done": "Concluído",
+    "Approved": "Concluído",
+    "Blocked": "Refinando",
+    "Abortado": "Cancelado",
+    "Cancelled": "Cancelado"
   }
 }
