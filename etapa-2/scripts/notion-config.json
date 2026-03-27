@@ -1,0 +1,22 @@
+{
+  "project_page_id": "3301d792-23f7-810d-9820-c85e52dea901",
+  "tasks_database_id": "3301d792-23f7-81e6-b31e-fd1610d3584d",
+  "story_map": {
+    "1.1": "3301d792-23f7-81de-ab0b-fd01171f4655",
+    "1.2": "3301d792-23f7-8154-99ee-d1c647a2c424",
+    "2.1": "3301d792-23f7-818a-9df1-e6c3b7af75bc",
+    "2.2": "3301d792-23f7-81f7-80c3-cf152fc4fbb8",
+    "3.1": "3301d792-23f7-8130-b62b-f526e4d8f53f"
+  },
+  "status_map": {
+    "Draft": "Ideia",
+    "Ready": "Pronto Para Executar",
+    "InProgress": "Em andamento",
+    "InReview": "Em revisão",
+    "Done": "Concluído",
+    "Approved": "Concluído",
+    "Blocked": "Refinando",
+    "Abortado": "Cancelado",
+    "Cancelled": "Cancelado"
+  }
+}

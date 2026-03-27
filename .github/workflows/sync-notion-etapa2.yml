@@ -1,0 +1,38 @@
+name: Sync Etapa-2 Stories to Notion
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'etapa-2/docs/stories/**.story.md'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Sync to Notion
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: python etapa-2/scripts/sync_notion.py
+
+      - name: Commit state
+        run: |
+          git config user.email "notion-sync@github-actions"
+          git config user.name "Notion Sync Bot"
+          git add etapa-2/scripts/state.json etapa-2/scripts/notion-config.json
+          git diff --staged --quiet || git commit -m "chore: sync etapa-2 state [skip ci]"
+          git push
