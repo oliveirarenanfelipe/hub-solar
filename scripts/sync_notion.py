@@ -126,12 +126,12 @@ def save_config(config: dict):
         encoding="utf-8"
     )
 
-def create_page(token, database_id, title, status_name="Ideia") -> str:
+def create_page(token, database_id, title, status_name="Ideia", title_prop="title") -> str:
     """Cria uma entrada no banco de dados Tasks e retorna o page_id gerado."""
     resp = notion_request(token, "POST", "/pages", {
         "parent": {"database_id": database_id},
         "properties": {
-            "title": {
+            title_prop: {
                 "title": [{"type": "text", "text": {"content": title}}]
             },
             "Status": {"status": {"name": status_name}}
@@ -140,6 +140,16 @@ def create_page(token, database_id, title, status_name="Ideia") -> str:
     if resp and "id" in resp:
         return resp["id"]
     return ""
+
+def update_title(token, page_id, title, title_prop="title"):
+    """Atualiza o título de uma página existente."""
+    notion_request(token, "PATCH", f"/pages/{page_id}", {
+        "properties": {
+            title_prop: {
+                "title": [{"type": "text", "text": {"content": title}}]
+            }
+        }
+    })
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
 
@@ -156,6 +166,7 @@ def main():
     status_map     = config["status_map"]
     project_id     = config["project_page_id"]
     tasks_db_id    = config.get("tasks_database_id", "")
+    title_prop     = config.get("title_property", "title")
     today          = date.today().isoformat()
 
     state   = load_state()
@@ -179,7 +190,7 @@ def main():
         if story_id not in story_map or not story_map.get(story_id):
             print(f"  [{story_id}] Pagina nao encontrada — criando no Notion...")
             notion_status_name = status_map.get(current["status"], "Ideia")
-            new_page_id = create_page(token, tasks_db_id, current["title"], notion_status_name)
+            new_page_id = create_page(token, tasks_db_id, current["title"], notion_status_name, title_prop)
             if new_page_id:
                 story_map[story_id] = new_page_id
                 config_updated = True
@@ -187,6 +198,9 @@ def main():
             else:
                 print(f"  [{story_id}] ERRO ao criar pagina — pulando.")
                 continue
+        else:
+            # Corrigir título se estava em branco (bug anterior com title_property errada)
+            update_title(token, story_map[story_id], current["title"], title_prop)
 
         previous = state.get(story_id, {})
 
