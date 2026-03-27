@@ -38,3 +38,8 @@ venv/
 
 # AIOX runtime
 .aiox/handoffs/
+
+# Scripts com credenciais — NUNCA commitar
+scripts/hub_config.json
+scripts/fotus_token.json
+scripts/fotus_browser_state.json
