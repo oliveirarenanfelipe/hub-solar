@@ -140,11 +140,14 @@ def aguardar_token_manual(timeout_min: int = 60) -> str | None:
     """Aguarda novo token ser salvo manualmente (após alerta Telegram)."""
     from hub_alerts import alerta_urgente
     alerta_urgente(
-        "Fotus: token EXPIRADO e login automático falhou.\n\n"
-        "Faça login em *app.fotus.com.br* no Opera, abra o DevTools (F12) "
-        "→ Application → Local Storage → copie o `accessToken` "
-        "e salve em `scripts/fotus_token.json`.\n\n"
-        "O keeper vai detectar automaticamente."
+        "Fotus: token *expirado* ☠️\n\n"
+        "1. Abra o Opera → app.fotus.com.br\n"
+        "2. F12 → Application → Local Storage → copie `accessToken`\n"
+        "3. No PowerShell:\n"
+        "`cd C:\\Users\\olive\\Projeto\\HUB-Solar`\n"
+        "`python scripts\\fotus_set_token.py`\n"
+        "4. Cole o token quando pedido\n\n"
+        "Feito! Sistema volta automaticamente."
     )
     log.error("Aguardando token manual... (verificando a cada 2 min)")
     token_atual = load_token()
