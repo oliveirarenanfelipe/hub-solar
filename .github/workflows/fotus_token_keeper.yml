@@ -2,7 +2,7 @@ name: Fotus Token Keeper
 
 on:
   schedule:
-    - cron: '*/45 * * * *'   # a cada 45 minutos
+    - cron: '*/20 * * * *'   # a cada 20 minutos (margem segura: token dura 1h)
   workflow_dispatch:           # permite rodar manualmente se necessário
 
 jobs:
@@ -25,3 +25,11 @@ jobs:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python scripts/fotus_cloud_keeper.py
+
+      - name: Alerta de falha (fallback via curl)
+        if: failure()
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d parse_mode="Markdown" \
+            -d text="🔴 *HUB Solar — Fotus Keeper FALHOU*%0A%0AToken provavelmente expirado.%0A%0AComo renovar:%0A1. Acesse app.fotus.com.br%0A2. F12 → Application → Local Storage%0A3. Copie o \`accessToken\`%0A4. Mande aqui no chat"
